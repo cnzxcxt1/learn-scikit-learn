@@ -1,3 +1,5 @@
+### this file is compiled with python35
+
 ### chapter 1 : Machine Learning – A Gentle Introduction
 
 import sklearn as sk
