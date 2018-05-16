@@ -2,7 +2,7 @@
 
 ### chapter 1 : Machine Learning – A Gentle Introduction
 
-import sklearn as sk
+### import sklearn as sk
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -67,7 +67,7 @@ for i in [0, 1, 2]:
     axes[i].set_xlim(x_min, x_max)
     axes[i].set_ylim(y_min, y_max)
     plt.sca(axes[i])
-    plt.scatter(X_train[:, 0], X_train[:, 1], c=y_train, cmap=plt.cm.prism)
+    plt.scatter(X_train[:, 0], X_train[:, 1], c=y_train)
     ys = (-clf.intercept_[i]-xs * clf.coef_[i, 0]) / clf.coef_[i, 1]
     plt.plot(xs, ys, hold=True)
 
@@ -100,7 +100,7 @@ from sklearn.pipeline import Pipeline
 # create a composite estimator made by a pipeline of the standardization and the linear model
 clf = Pipeline([
     ('scaler', StandardScaler()),
-    ('linear_model', SGDClassifier())
+    ('linear_model', SGDClassifier(max_iter=1000, tol = 1e-3))
 ])
 # create a k-fold cross validation iterator of k=5 folds
 cv = KFold(X.shape[0], 5, shuffle=True, random_state=33)
@@ -110,7 +110,9 @@ print(scores)
 
 
 from scipy.stats import sem
-def mean_score(scores):
+def meanscore(scores):
     return("Mean score: {0:.3f} (+/- {1:.3f})").format(np.mean(scores), sem(scores))
-print(mean_score(scores))
+
+mean_value = meanscore(scores)
+print()
 # Mean score: 0.800 (+/- 0.037)
