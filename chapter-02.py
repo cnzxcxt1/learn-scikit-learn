@@ -1,4 +1,4 @@
-import sklearn as sk
+#import sklearn as sk
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.datasets import fetch_olivetti_faces
@@ -42,8 +42,8 @@ svc_1 = SVC(kernel='linear')
 from sklearn.cross_validation import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(faces.data, faces.target, test_size=0.25, random_state=0)
 
-from sklearn.cross_validation import cross_val_score, KFold
-from scipy.stats import sem
+#from sklearn.cross_validation import cross_val_score, KFold
+#from scipy.stats import sem
 def evaluate_cross_validation(clf, X, y, K):
     # create a k-fold croos validation iterator
     cv = KFold(len(y), K, shuffle=True, random_state=0)
@@ -56,7 +56,7 @@ evaluate_cross_validation(svc_1, X_train, y_train, 5)
 
 
 
-from sklearn import metrics
+#from sklearn import metrics
 
 def train_and_evaluate(clf, X_train, X_test, y_train, y_test):
     clf.fit(X_train, y_train)
@@ -163,8 +163,8 @@ clf_3 = Pipeline([
     ('clf', MultinomialNB()),
 ])
 
-from sklearn.cross_validation import cross_val_score, KFold
-from scipy.stats import sem
+#from sklearn.cross_validation import cross_val_score, KFold
+#from scipy.stats import sem
 
 def evaluate_cross_validation(clf, X, y, K):
     # create a k-fold croos validation iterator of k=5 folds
@@ -359,8 +359,8 @@ def measure_performance(X,y,clf, show_accuracy=True, show_classification_report=
             metrics.accuracy_score(y, y_pred)
         ),"\n")
     if show_classification_report:
-    print("Classification report")
-    print(metrics.classification_report(y,y_pred),"\n")
+        print("Classification report")
+        print(metrics.classification_report(y,y_pred),"\n")
     if show_confussion_matrix:
         print("Confussion matrix")
         print(metrics.confusion_matrix(y,y_pred),"\n")
