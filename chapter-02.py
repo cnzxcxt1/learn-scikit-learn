@@ -1,7 +1,8 @@
-import sklearn as sk
+
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.datasets import fetch_olivetti_faces
+from sklearn import ensemble
 
 faces = fetch_olivetti_faces()
 print(faces.DESCR)
@@ -359,8 +360,8 @@ def measure_performance(X,y,clf, show_accuracy=True, show_classification_report=
             metrics.accuracy_score(y, y_pred)
         ),"\n")
     if show_classification_report:
-    print("Classification report")
-    print(metrics.classification_report(y,y_pred),"\n")
+        print("Classification report")
+        print(metrics.classification_report(y,y_pred),"\n")
     if show_confussion_matrix:
         print("Confussion matrix")
         print(metrics.confusion_matrix(y,y_pred),"\n")
@@ -457,8 +458,7 @@ clf_svr_rbf = svm.SVR(kernel='rbf')
 train_and_evaluate(clf_svr_rbf, X_train, y_train)
 
 # Third try – Random Forests revisited
-from sklearn import ensemble
-import numpy
+
 clf_et=ensemble.ExtraTreesRegressor(n_estimators=10, random_state=42)
 train_and_evaluate(clf_et, X_train, y_train)
 
