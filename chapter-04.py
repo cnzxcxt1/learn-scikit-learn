@@ -1,7 +1,8 @@
-
+# %pylab inline
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import time
 
 titanic = pd.read_csv('titanic.csv')
 print(titanic)
@@ -18,7 +19,9 @@ def one_hot_dataframe(data, cols, replace=False):
     if replace:
         data = data.drop(cols, axis=1)
         data = data.join(vecData)
-    return (data, vecData)
+    return data,vecData
+
+
 titanic,titanic_n = one_hot_dataframe(titanic, ['pclass', 'embarked', 'sex'], replace=True)
 titanic.describe()
 
@@ -38,10 +41,14 @@ X_train, X_test, y_train, y_test = train_test_split(titanic_data, titanic_target
 from sklearn import tree
 dt = tree.DecisionTreeClassifier(criterion='entropy')
 dt = dt.fit(X_train, y_train)
+
 from sklearn import metrics
 y_pred = dt.predict(X_test)
 print("Accuracy:{0:.3f}".format(metrics.accuracy_score(y_test, y_pred)), "\n")
 
+
+
+# Feature selection
 print(titanic)
 
 from sklearn import feature_selection
@@ -116,10 +123,10 @@ def get_stop_words():
 
 stop_words = get_stop_words()
 
-clf = Pipeline([('vect', TfidfVectorizer( stop_words=stop_words,
-                                              token_pattern= r"\b[a-z0-9_\-\.]+[a-z][a-z0-9_\-\.]+\b",
-                                              )),('nb', MultinomialNB(alpha=0.01)),
-                    ])
+clf = Pipeline([('vect',
+                 TfidfVectorizer( stop_words=stop_words,
+                                  token_pattern= r"\b[a-z0-9_\-\.]+[a-z][a-z0-9_\-\.]+\b",)),
+                ('nb', MultinomialNB(alpha=0.01)),])
 
 from sklearn.cross_validation import cross_val_score, KFold
 from scipy.stats import sem
@@ -190,15 +197,16 @@ parameters = {
                  'svc__C': np.logspace(-1, 1, 3),
 }
 
-clf = Pipeline([('vect',
-                 TfidfVectorizer(stop_words=stop_words,
+clf = Pipeline([
+    ('vect',TfidfVectorizer(stop_words=stop_words,
                                  token_pattern= r"\b[a-z0-9_\-\.]+[a-z][a-z0-9_\-\.]+\b",
-                                 )),
-                ('svc', SVC()),
-                ])
+                            )),('svc', SVC()),])
+
 gs = GridSearchCV(clf, parameters, verbose=2, refit=False, cv=3)
 
 %time _ = gs.fit(X_train, y_train)
+
+
 gs.best_params_, gs.best_score_
 
 
@@ -209,7 +217,6 @@ import os
 def persist_cv_splits(X, y, K=3, name='data', suffix="_cv_%03d.pkl"):
     """Dump K folds to filesystem."""
     cv_split_filenames = []
-
     # create KFold cross validation
     cv = KFold(n_samples, K, shuffle=True, random_state=0)
     # iterate over the K folds
@@ -252,6 +259,10 @@ def parallel_grid_search(lb_view, clf, cv_split_filenames, param_grid):
     return all_parameters, all_tasks
 
 
+
+
+
+### For this part, the code cannot work with parallel package
 from sklearn.svm import SVC
 from IPython.parallel import Client
 
