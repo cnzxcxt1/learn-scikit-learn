@@ -275,8 +275,6 @@ def print_progress(tasks):
     print("Tasks completed: {0}%".format(100 * progress))
 
 print_progress(all_tasks)
-
-
 def find_bests(all_parameters, all_tasks, n_top=5):
     """Compute the mean score of the completed tasks"""
     mean_scores = []
