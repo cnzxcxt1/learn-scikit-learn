@@ -1,8 +1,9 @@
-
+# import sklearn as sk
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.datasets import fetch_olivetti_faces
-from sklearn import ensemble
+## the following package is also important for loading metrics
+from sklearn import metrics, ensemble
 
 faces = fetch_olivetti_faces()
 print(faces.DESCR)
@@ -40,9 +41,14 @@ plt.show()
 # Training a Support Vector Machine
 from sklearn.svm import SVC
 svc_1 = SVC(kernel='linear')
+#
 from sklearn.cross_validation import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(faces.data, faces.target, test_size=0.25, random_state=0)
 
+
+## the following packages shuold be loaded,
+## cross_validation will not be available in the future, but it works always with the old version
+## but I should develop another version of code
 from sklearn.cross_validation import cross_val_score, KFold
 from scipy.stats import sem
 def evaluate_cross_validation(clf, X, y, K):
@@ -57,7 +63,8 @@ evaluate_cross_validation(svc_1, X_train, y_train, 5)
 
 
 
-from sklearn import metrics
+
+
 
 def train_and_evaluate(clf, X_train, X_test, y_train, y_test):
     clf.fit(X_train, y_train)
@@ -198,8 +205,8 @@ def get_stop_words():
 
 clf_5 = Pipeline([
     ('vect', TfidfVectorizer(
-        stop_words= get_stop_words(),
-        token_pattern= r"\b[a-z0-9_\-\.]+[a-z][a-z0-9_\-\.]+\b",
+        stop_words=get_stop_words(),
+        token_pattern=r"\b[a-z0-9_\-\.]+[a-z][a-z0-9_\-\.]+\b",
     )),
     ('clf', MultinomialNB()),
 ])
@@ -211,7 +218,7 @@ clf_6 = Pipeline([
         stop_words= get_stop_words(),
         token_pattern= r"\b[a-z0-9_\-\.]+[a-z][a-z0-9_\-\.]+\b",
     )),
-    ('clf', MultinomialNB(alpha = 0.01)),
+    ('clf', MultinomialNB(alpha=0.01)),
 ])
 
 evaluate_cross_validation(clf_6, news.data, news.target, 5)
@@ -314,7 +321,7 @@ t = label_encoder.transform(titanic_X[:, 0]).reshape(num_of_rows, 1)
 # indicating if the instance belongs to the class
 new_features = one_hot_encoder.transform(t)
 # Add the new features to titanix_X
-titanic_X = np.concatenate([titanic_X, new_features.toarray()], axis = 1)
+titanic_X = np.concatenate([titanic_X, new_features.toarray()], axis=1)
 
 #Eliminate converted columns
 titanic_X = np.delete(titanic_X, [0], 1)
@@ -343,14 +350,14 @@ clf = clf.fit(X_train, y_train)
 import pydotplus
 from io import StringIO
 dot_data = StringIO()
-tree.export_graphviz(clf, out_file=dot_data, feature_names=['age','sex','1st_class','2nd_class', '3rd_class'])
+tree.export_graphviz(clf, out_file=dot_data, feature_names=['age', 'sex', '1st_class', '2nd_class', '3rd_class'])
 #graph = pydotplus.graph_from_dot_data(dot_data.getvalue())
 graph = pydotplus.graph_from_dot_data(dot_data.getvalue())
 graph.write_png('titanic.png')
 
 from IPython.core.display import Image
 Image(filename='titanic.png')
-#plt.show()
+
 
 from sklearn import metrics
 def measure_performance(X,y,clf, show_accuracy=True, show_classification_report=True, show_confussion_matrix=True):
@@ -361,10 +368,10 @@ def measure_performance(X,y,clf, show_accuracy=True, show_classification_report=
         ),"\n")
     if show_classification_report:
         print("Classification report")
-        print(metrics.classification_report(y,y_pred),"\n")
+        print(metrics.classification_report(y, y_pred), "\n")
     if show_confussion_matrix:
         print("Confussion matrix")
-        print(metrics.confusion_matrix(y,y_pred),"\n")
+        print(metrics.confusion_matrix(y, y_pred), "\n")
 
 measure_performance(X_train,y_train,clf, show_classification_report = False, show_confussion_matrix = False)
 
@@ -379,7 +386,7 @@ def loo_cv(X_train, y_train,clf):
     for train_index, test_index in loo:
         X_train_cv, X_test_cv = X_train[train_index], X_train[test_index]
         y_train_cv, y_test_cv = y_train[train_index], y_train[test_index]
-        clf = clf.fit(X_train_cv,y_train_cv)
+        clf = clf.fit(X_train_cv, y_train_cv)
         y_pred = clf.predict(X_test_cv)
         scores[test_index] = metrics.accuracy_score(y_test_cv.astype(int), y_pred.astype(int))
     print(("Mean score: {0:.3f} (+/-{1:.3f})").format(np.mean(scores), sem(scores)))
@@ -434,15 +441,15 @@ def train_and_evaluate(clf, X_train, y_train):
     print("Average coefficient of determination using 5-fold crossvalidation:",np.mean(scores))
 
 from sklearn import linear_model
-clf_sgd = linear_model.SGDRegressor(loss='squared_loss', penalty=None, random_state=42)
-train_and_evaluate(clf_sgd,X_train,y_train)
+clf_sgd = linear_model.SGDRegressor(loss='squared_loss', penalty=None, random_state=42, max_iter=1000, tol=1e-3)
+train_and_evaluate(clf_sgd, X_train, y_train)
 #Coefficient of determination on training set: 0.743303511411
 #Average coefficient of determination using 5-fold crossvalidation: 0.715166411086
 
 print(clf_sgd.coef_)
 
 
-clf_sgd1 = linear_model.SGDRegressor(loss='squared_loss', penalty='l2', random_state=42)
+clf_sgd1 = linear_model.SGDRegressor(loss='squared_loss', penalty='l2', random_state=42, max_iter=1000, tol=1e-3)
 train_and_evaluate(clf_sgd1, X_train, y_train)
 
 
@@ -458,8 +465,8 @@ clf_svr_rbf = svm.SVR(kernel='rbf')
 train_and_evaluate(clf_svr_rbf, X_train, y_train)
 
 # Third try – Random Forests revisited
-
-clf_et=ensemble.ExtraTreesRegressor(n_estimators=10, random_state=42)
+from sklearn import ensemble
+clf_et = ensemble.ExtraTreesRegressor(n_estimators=10, random_state=42)
 train_and_evaluate(clf_et, X_train, y_train)
 
 print(sorted(zip(clf_et.feature_importances_, boston.feature_names)))
@@ -471,12 +478,12 @@ def measure_performance(X, y, clf, show_accuracy=True, show_classification_repor
         print("Accuracy:{0:.3f}".format(metrics.accuracy_score(y, y_pred)),"\n")
     if show_classification_report:
         print("Classification report")
-        print(metrics.classification_report(y, y_pred),"\n")
+        print(metrics.classification_report(y, y_pred), "\n")
     if show_confusion_matrix:
         print("Confusion matrix")
-        print(metrics.confusion_matrix(y, y_pred),"\n")
+        print(metrics.confusion_matrix(y, y_pred), "\n")
     if show_r2_score:
-        print("Coefficient of determination:{0:.3f}".format(metrics.r2_score(y, y_pred) ),"\n")
+        print("Coefficient of determination:{0:.3f}".format(metrics.r2_score(y, y_pred)), "\n")
 
 measure_performance(X_test, y_test, clf_et, show_accuracy=False,
                     show_classification_report=False,
