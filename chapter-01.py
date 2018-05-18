@@ -2,9 +2,9 @@
 
 ### chapter 1 : Machine Learning – A Gentle Introduction
 
+import sklearn as sk
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.stats import sem
 
 from sklearn import datasets
 iris = datasets.load_iris()
@@ -24,7 +24,7 @@ from sklearn import preprocessing
 X, y = X_iris[:, :2], y_iris
 # Split the dataset into a training and a testing set
 # Test set will be the 25% taken randomly
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=33)
+X_train, X_test, y_train, y_test = train_test_split(X, y,test_size=0.25, random_state=33)
 print(X_train.shape, y_train.shape)
 #(112, 2) (112,)
 # Standardize the features
@@ -47,7 +47,7 @@ plt.show()
 plt.close()
 
 from sklearn.linear_model import SGDClassifier
-clf = SGDClassifier(max_iter=10)
+clf = SGDClassifier(max_iter = 10)
 clf.fit(X_train, y_train)
 
 print(clf.coef_)
@@ -67,7 +67,7 @@ for i in [0, 1, 2]:
     axes[i].set_xlim(x_min, x_max)
     axes[i].set_ylim(y_min, y_max)
     plt.sca(axes[i])
-    plt.scatter(X_train[:, 0], X_train[:, 1], c=y_train)
+    plt.scatter(X_train[:, 0], X_train[:, 1], c=y_train, cmap=plt.cm.prism)
     ys = (-clf.intercept_[i]-xs * clf.coef_[i, 0]) / clf.coef_[i, 1]
     plt.plot(xs, ys, hold=True)
 
@@ -76,7 +76,7 @@ plt.show()
 print(clf.predict(scaler.transform([[4.7, 3.1]])))
 # [0] 这个样本是属于第[0]类别的
 
-print(clf.decision_function(scaler.transform([[4.7, 3.1]])))
+print (clf.decision_function(scaler.transform([[4.7, 3.1]])))
 # [[ 31.93380767  -5.68461089 -20.86369965]]
 
 from sklearn import metrics
@@ -100,7 +100,7 @@ from sklearn.pipeline import Pipeline
 # create a composite estimator made by a pipeline of the standardization and the linear model
 clf = Pipeline([
     ('scaler', StandardScaler()),
-    ('linear_model', SGDClassifier(max_iter=1000, tol=1e-3))
+    ('linear_model', SGDClassifier())
 ])
 # create a k-fold cross validation iterator of k=5 folds
 cv = KFold(X.shape[0], 5, shuffle=True, random_state=33)
@@ -109,7 +109,7 @@ scores = cross_val_score(clf, X, y, cv=cv)
 print(scores)
 
 
-
+from scipy.stats import sem
 def mean_score(scores):
     return("Mean score: {0:.3f} (+/- {1:.3f})").format(np.mean(scores), sem(scores))
 print(mean_score(scores))
