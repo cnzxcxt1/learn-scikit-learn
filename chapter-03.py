@@ -10,7 +10,7 @@ n_row, n_col = 2, 5
 def print_digits(images, y, max_n=10):
     # set up the figure size in inches
     fig = plt.figure(figsize=(2. * n_col, 2.26 * n_row))
-    i=0
+    i = 0
     while i < max_n and i < images.shape[0]:
         p = fig.add_subplot(n_row, n_col, i + 1, xticks=[], yticks=[])
         p.imshow(images[i], cmap=plt.cm.bone, interpolation='nearest')
@@ -20,6 +20,7 @@ def print_digits(images, y, max_n=10):
 
 print_digits(digits.images, digits.target, max_n=10)
 plt.show()
+plt.close()
 
 def plot_pca_scatter():
     colors = ['black', 'blue', 'purple', 'yellow', 'white','red', 'lime', 'cyan', 'orange', 'gray']
@@ -36,6 +37,7 @@ estimator = PCA(n_components=10)
 X_pca = estimator.fit_transform(X_digits)
 plot_pca_scatter()
 plt.show()
+plt.close()
 
 
 def print_pca_components(images, n_col, n_row):
@@ -85,15 +87,17 @@ clf.fit(X_train)
 
 print_digits(images_train, clf.labels_, max_n=10)
 plt.show()
+plt.close()
 
 y_pred=clf.predict(X_test)
 def print_cluster(images, y_pred, cluster_number):
-    images = images[y_pred==cluster_number]
-    y_pred = y_pred[y_pred==cluster_number]
-    print_digits(images, y_pred,max_n=10)
+    images = images[y_pred == cluster_number]
+    y_pred = y_pred[y_pred == cluster_number]
+    print_digits(images, y_pred, max_n=10)
+
 for i in range(10):
     print_cluster(images_test, y_pred, i)
-plt.show()
+
 
 
 from sklearn import metrics
