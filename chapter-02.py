@@ -438,7 +438,7 @@ def train_and_evaluate(clf, X_train, y_train):
     # create a k-fold cross validation iterator of k=5 folds
     cv = KFold(X_train.shape[0], 5, shuffle=True, random_state=33)
     scores = cross_val_score(clf, X_train, y_train, cv=cv)
-    print("Average coefficient of determination using 5-fold crossvalidation:",np.mean(scores))
+    print("Average coefficient of determination using 5-fold crossvalidation:", np.mean(scores))
 
 from sklearn import linear_model
 clf_sgd = linear_model.SGDRegressor(loss='squared_loss', penalty=None, random_state=42, max_iter=1000, tol=1e-3)
@@ -475,7 +475,7 @@ from sklearn import metrics
 def measure_performance(X, y, clf, show_accuracy=True, show_classification_report=True, show_confusion_matrix=True, show_r2_score=False):
     y_pred = clf.predict(X)
     if show_accuracy:
-        print("Accuracy:{0:.3f}".format(metrics.accuracy_score(y, y_pred)),"\n")
+        print("Accuracy:{0:.3f}".format(metrics.accuracy_score(y, y_pred)), "\n")
     if show_classification_report:
         print("Classification report")
         print(metrics.classification_report(y, y_pred), "\n")
